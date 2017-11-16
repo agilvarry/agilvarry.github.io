@@ -55,6 +55,10 @@ p{
   padding-right: 0;
 }
 
+.jumbotron p {
+  margin-bottom: 5px;
+}
+
 .jumbotron{
   background: none;
   margin-top: 50px;
