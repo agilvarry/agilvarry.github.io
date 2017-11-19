@@ -62,7 +62,8 @@ p{
 .jumbotron{
   background: none;
   margin-top: 50px;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
 }
 .jumbotron h1{
   font-size: 72px;
@@ -112,8 +113,10 @@ p{
 }
 
 .site-footer {
-  margin-bottom: 3rem;
-}
-.site-footer span {
-  margin-right: 0.5em;
+  position: bottom;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
 }
