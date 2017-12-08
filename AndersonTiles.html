@@ -8,10 +8,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Alex Gilvarry | Home</title>
         <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="stylesheet" href="bootstrap3/css/bootstrap.min.css">
         <link rel="stylesheet" href="css/style.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+  integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+  crossorigin=""/>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -45,41 +48,23 @@
           </div><!-- /.container-fluid -->
         </nav>
 
-        <div class="container-fluid text-center">
+        <div class="container-fluid text-center center-block">
           <div class="jumbotron">
             <div class="row">
               <div class="col-md-10 col-md-offset-1">
                 <h1>
-                  Alex Gilvarry
+                  Wes Anderson Inspired Web Map Tileset
                 </h1>
-                <p class="lead">
-                  Cartographer in Training
-                </p>
+                <p class="lead"> A custom webmap tileset inspired by the look of Wes Anderson films</p>
+                <p><br></p>
+                <div id="map"></div>
               </div>
             </div>
           </div>
         </div>
-
-        <div class="portfolio container-fluid">
-          <div class="portfolio-items row center-block">
-
-            <figure class="portfolio-item col-sm-4 item">
-              <a href="bike-race.html">
-                <img src="img\Thumbnail_BikeMap.png" class="img-responsive">
-              </a>
-            </figure>
-            <figure class="portfolio-item col-sm-4 item">
-              <a href="water-infographic.html">
-                <img src="img\Thumbnail_InfoGraphic.png" class="img-responsive">
-              </a>
-            </figure>
-            <figure class="portfolio-item col-sm-4 item">
-              <a href="AndersonTiles.html">
-                <img src="img\Thumbnail_WesTiles.png" class="img-responsive">
-              </a>
-            </figure>
-          </div>
         </div>
+
+
 
         <footer class="container-fluid site-footer">
           <div class="row">
@@ -89,9 +74,22 @@
           </div>
         </footer>
 
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
         <script src="bootstrap3/js/bootstrap.min.js"></script>
         <script src="js/plugins.js"></script>
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+        <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+          integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+          crossorigin=""></script>
+          <script>
+          var mymap = L.map('map').setView([40.76, -111.89], 3);
+          L.tileLayer('https://api.mapbox.com/styles/v1/agilvarry/cjapm97ck36sh2rqoibdx95g5/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWdpbHZhcnJ5IiwiYSI6ImNqNmZqaWV6dTBoYXAzMm11NDJhbmFsaW0ifQ.XaYLUqcCpgz6Y17ygK4lZA',{
+            maxZoom: 18
+
+          }).addTo(mymap);
+          map.locate({setView: true, maxZoom: 16});
+          </script>
     </body>
 </html>
