@@ -113,10 +113,26 @@ html, body, #map {
     text-align: center;
     border: solid gray 1px;
 }
+
+.range-slider {
+    width: 150px;
+}
+.skip{
+  visibility: hidden;
+  display: none;
+}
 @media screen and (max-width: 600px) {
   .legend-control-container{
     visibility: hidden;
     display: none;
+  }
+  .range-slider{
+    visibility: hidden;
+    display: none;
+  }
+  .skip{
+    visibility: visible;
+    display: inline;
   }
 }
 .sequence-container{
@@ -126,9 +142,7 @@ html, body, #map {
   text-align: left;
   border: solid gray 1px;
 }
-.range-slider {
-    width: 150px;
-}
+
 .circle-text{
   font-weight: 700;
   fill: Black;

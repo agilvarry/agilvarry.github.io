@@ -146,23 +146,43 @@ function createSequenceControls(map, capita, total, attributes){
     let stamp = L.DomUtil.create('div', 'timestamp-container');
     //create slider to progress time, add it to container
     let slider = L.DomUtil.create("input", "range-slider");
-    $(container).append(stamp).append(slider);
+    let forward = L.DomUtil.create("button", "skip");
+    let back = L.DomUtil.create("button","skip");
+    $(forward).text("Forward");
+    $(back).text("Back");
+    $(container).append(stamp).append(slider).append(back).append(forward);
     //stop the map from being dragged aroundwhen you interact with the slider
-    L.DomEvent.on(container, 'mousedown dblclick pointerdown', function(e) {
+    L.DomEvent.on(container, 'mousedown touchstart touchmove dblclick pointerdown', function(e) {
       L.DomEvent.stopPropagation(e);
     });
 
+    let index = 0;
 
-    //selestor for the year slider
+    //selector for the year slider
     $(slider)
     //set attributes
     .attr({'type':'range', 'max': 17, 'min': 0, 'step': 1,'value': 0})
     .on('input change', function() {
-      let index = $(this).val();
+      index = $(this).val();
 
       updateLegend(map, attributes[index]);
-
+      console.log(index);
       updatePropSymbols(map, attributes[index]);
+    });
+
+    $(forward).on("click", function(){
+         index++;
+         index = index > 17 ? 0 : index;
+       $('.range-slider').val(index);
+       updateLegend(map, attributes[index]);
+       updatePropSymbols(map, attributes[index]);
+    });
+    $(back).on("click", function(){
+       index--;
+         index = index < 0 ? 17 : index;
+       $('.range-slider').val(index);
+       updateLegend(map, attributes[index]);
+       updatePropSymbols(map, attributes[index]);
     });
 
     L.DomEvent.addListener(slider, 'input', function(e) {
