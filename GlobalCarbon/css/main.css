@@ -105,13 +105,19 @@ html, body, #map {
 }
 
 .legend-control-container {
-    width: 230px;
-    height: 230px + 45px;
+    width: 200px;
+    height: 200px + 45px;
     background-color: rgba(255,255,255,0.8);
     padding: 10px;
     line-height: 45px;
     text-align: center;
     border: solid gray 1px;
+}
+@media screen and (max-width: 600px) {
+  .legend-control-container{
+    visibility: hidden;
+    display: none;
+  }
 }
 .sequence-container{
   background-color: rgba(255,255,255,0.8);
@@ -123,9 +129,13 @@ html, body, #map {
 .range-slider {
     width: 150px;
 }
-.text{
-  color: white;
+.circle-text{
   font-weight: 700;
+  fill: Black;
+}
+.title-container{
+font-size: 1.2em;
+font-weight: 600;
 }
 /* get icons for forward backward buttons if i decide to use them*/
 

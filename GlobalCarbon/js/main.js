@@ -1,32 +1,33 @@
 //Create the Leaflet map
 function createMap(){
-  var myMap = L.map('map').setView([40.76, -111.89], 3);
-  var total = new L.geoJson().addTo(myMap);
-  var capita = new L.geoJson();
+  //make map and layer letiables
+  let myMap = L.map('map').setView([40.76, -111.89], 3);
+  let total = new L.geoJson().addTo(myMap);
+  let capita = new L.geoJson();
 
-  getCapitaData(myMap, capita, total);
-  getTotalData(myMap, total);
 
-  var dataLayers={
+  //create layer object for switching
+  let dataLayers={
     "Total Carbon": total,
     "Per Capita Carbon": capita
   }
-
+  //functions to create layers
+  getCapitaData(myMap, capita, total);
+  getTotalData(myMap, total);
+  //set basemap
   L.tileLayer('https://api.mapbox.com/styles/v1/agilvarry/cjapm97ck36sh2rqoibdx95g5/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWdpbHZhcnJ5IiwiYSI6ImNqNmZqaWV6dTBoYXAzMm11NDJhbmFsaW0ifQ.XaYLUqcCpgz6Y17ygK4lZA',{
     minZoom: 3,
     maxZoom: 16
   }).addTo(myMap);
 
-  myMap.locate({setView: true, maxZoom: 16});
+  myMap.locate({setView: true, maxZoom: 14});
+  //add layer toggle to map
   L.control.layers(dataLayers).addTo(myMap);
-
-
 };
 
-
 function pointToLayer(feature, latlng, attributes){
-  //create marker options
-  var marker = {
+  //initial marker symbol properties
+  let marker = {
     radius: 8,
     fillColor: "#ff7800",
     color: "#000",
@@ -35,70 +36,70 @@ function pointToLayer(feature, latlng, attributes){
     fillOpacity: 0.8
   };
   //Determine which attribute to visualize with proportional symbols
-  var attribute = attributes[0];
-
+  let attribute = attributes[0];
   //For each feature, determine its value for the selected attribute
-  var attValue = feature.properties[attribute];
+  let attValue = feature.properties[attribute];
 
+  //check if per capita series, if so multiply attValue so it shows on the map
   if(feature.properties["SeriesCode"] === 751){
-    attValue *=200000;
+    attValue *=400000;
   }
 
-
-  //Give each feature's circle marker a radius based on its attribute value
+  //Give each feature's circle marker a radius based on the  scaled attribute value
   marker.radius = calcPropRadius(attValue);
   //create circle marker layer
-  var layer = L.circleMarker(latlng, marker);
+  let layer = L.circleMarker(latlng, marker);
   //create popup
   createPopup(feature.properties, attribute, layer, marker.radius);
   //event listeners to open popup on hover
   layer.on({
-    mouseover: function(){
+    mouseover: function(e){
       this.openPopup();
     },
-    mouseout: function(){
+    mouseout: function(e){
       this.closePopup();
     }
   });
-  //return the circle marker to the L.geoJson pointToLayer option
+  //return the circle marker
   return layer;
 };
 
 //create popup content
 function createPopup(properties, attribute, layer, radius){
   //add city to popup content string
-  var popupContent = "<p><b>Country:</b> " + properties.Country + "</p>";
+  let popupContent = "<p><b>Country:</b> " + properties.Country + "</p>";
   //add formatted attribute to panel content string
-  var year = attribute.split("_")[0];
-
+  let year = attribute.split("_")[0];
   if(properties.SeriesCode===751){
     popupContent += "<p><b>CO2 per capita in " + year + ":</b> " + properties[attribute] + " pounds</p>";
   } else{
     popupContent += "<p><b>Total CO2 in " + year + ":</b> " + properties[attribute] + " pounds</p>";
   }
-
-  //need to add offset but example in lecture doesn't work, or add a separate panel for imformation
-  //event listeners to open popup on hover
-  //if i can't fix this we don't actually need the radius
-  layer.bindPopup(popupContent);
+  //add content to the popup
+  //and function to have it show up outside the popup to avoid wierd behavior
+  layer.bindPopup(popupContent, {
+        offset: new L.Point(0,-(radius-7))
+    });
 };
 
 //updates the popup info when you click through time
 function updatePropSymbols(map, attribute){
-
+  //for each feature in the map layer
   map.eachLayer(function(layer){
+    //if the feature exists and has properties
     if (layer.feature && layer.feature.properties[attribute]){
       //access feature properties
-      var props = layer.feature.properties;
+      let props = layer.feature.properties;
       //update each feature's radius based on new attribute values
-      var attValue = props[attribute];
+      let attValue = props[attribute];
       //check if per capita series, if so multiply attValue so it shows on the map
-      if(layer.feature.properties["SeriesCode"] === 751){
-        attValue *=200000;
+      if(props["SeriesCode"] === 751){
+        attValue *=400000;
       }
-      var radius = calcPropRadius(attValue);
+      //calulate and set the radius and
+      let radius = calcPropRadius(attValue);
       layer.setRadius(radius);
-      //add city to popup content string
+      //add info to popup content string
       createPopup(props, attribute, layer, radius);
     };
   });
@@ -106,13 +107,12 @@ function updatePropSymbols(map, attribute){
 
 //calculate the radius of each proportional symbol
 function calcPropRadius(attValue) {
-  //scale factor to adjust symbol size evenly
-
-  var scaleFactor = .005;
+  //scale factor to being the symbol size way down
+  let scaleFactor = .002;
   //area based on attribute value and scale factor
-  var area = attValue * scaleFactor;
+  let area = attValue * scaleFactor;
   //radius calculated based on area
-  var radius = Math.sqrt(area/Math.PI);
+  let radius = Math.sqrt(area/Math.PI);
   return radius;
 };
 
@@ -138,35 +138,33 @@ function createCapitaSymbols(data, capita, attributes){
 
 //Create new sequence controls within map
 function createSequenceControls(map, capita, total, attributes){
-
-  var SequenceControl = L.control({ position: 'bottomleft'} );
-
+  let SequenceControl = L.control({ position: 'bottomleft'} );
   SequenceControl.onAdd = function(map) {
     // create the control container with a particular class name
-    var container = L.DomUtil.create('div', 'sequence-container');
-    //PUT YOUR SCRIPT TO CREATE THE TEMPORAL LEGEND HERE
-    var stamp = L.DomUtil.create('div', 'timestamp-container');
-    //add temporal legend div to container
-    var slider = L.DomUtil.create("input", "range-slider");
+    let container = L.DomUtil.create('div', 'sequence-container');
+    //create timestamp container
+    let stamp = L.DomUtil.create('div', 'timestamp-container');
+    //create slider to progress time, add it to container
+    let slider = L.DomUtil.create("input", "range-slider");
     $(container).append(stamp).append(slider);
-    //stop propogation from sequence control
-    L.DomEvent.on(slider, 'mousedown dblclick pointerdown', function(e) {
-
+    //stop the map from being dragged aroundwhen you interact with the slider
+    L.DomEvent.on(container, 'mousedown dblclick pointerdown', function(e) {
       L.DomEvent.stopPropagation(e);
     });
 
-    var index;
 
+    //selestor for the year slider
     $(slider)
-    .attr({'type':'range', 'max': 15, 'min': 0, 'step': 1,'value': 0})
+    //set attributes
+    .attr({'type':'range', 'max': 17, 'min': 0, 'step': 1,'value': 0})
     .on('input change', function() {
-       index = $(this).val();
+      let index = $(this).val();
 
       updateLegend(map, attributes[index]);
-      console.log(index);
+
       updatePropSymbols(map, attributes[index]);
     });
-    console.log(index);
+
     L.DomEvent.addListener(slider, 'input', function(e) {
       L.DomEvent.stopPropagation(e);
 
@@ -179,26 +177,26 @@ function createSequenceControls(map, capita, total, attributes){
 };
 
 function createLegend(map, attributes){
-  var LegendControl = L.control({ position: 'bottomright'} );
+  let LegendControl = L.control({ position: 'bottomright'} );
 
   LegendControl.onAdd = function (map) {
     // create the control container with a particular class name
-    var container = L.DomUtil.create('div', 'legend-control-container');
-    var title = L.DomUtil.create('div', 'title-container');
+    let container = L.DomUtil.create('div', 'legend-control-container');
+    let title = L.DomUtil.create('div', 'title-container');
     $(container).append(title);
     //start attribute legend svg string
-    var svg = '<svg id="attribute-legend" width="230px" height="230px">';
+    let svg = '<svg id="attribute-legend" width="160px" height="160px">';
 
     //array of circle names to base loop on
-    var circles = ["max", "mean", "min"];
+    let circles = ["max", "mean", "min"];
 
     //Step 2: loop to add each circle and text to svg string
-    for (var i=0; i<circles.length; i++){
+    for (let i=0; i<circles.length; i++){
       //circle string
       svg += '<circle class="legend-circle" id="' + circles[i] +
-      '" fill="#F47821" fill-opacity="0.8" stroke="#000000" cx="115"/>';
+      '" fill="#F47821" fill-opacity="0.8" stroke="#d3d3d3" cx="75"/>';
       //text string
-      svg += '<text class="circle-text" id="' + circles[i] + '-text" x="90"></text>';
+      svg += '<text class="circle-text" id="' + circles[i] + '-text" x="60"></text>';
     };
     //close svg string
     svg += "</svg>";
@@ -209,43 +207,39 @@ function createLegend(map, attributes){
   }
   LegendControl.addTo(map);
   updateLegend(map, attributes[0]);
+
 };
 
 //Calculate the max, mean, and min values for a given attribute
 function getCircleValues(map, attribute){
   //start with min at highest possible and max at lowest possible number
-  var min = Infinity,
+  let min = Infinity,
   max = -Infinity;
   //base change listener that ensures updated circle labels
     map.on("baselayerchange", function(){
       updateLegend(map, attribute);
+      updatePropSymbols(map, attribute);
     });
   map.eachLayer(function(layer){
     //get the attribute value
     if (layer.feature){
-
-      var attributeValue = Number(layer.feature.properties[attribute]);
+      let attributeValue = Number(layer.feature.properties[attribute]);
       //check if per capita series, if so multiply attValue so it shows on the map
       if(layer.feature.properties["SeriesCode"] === 751){
-        attributeValue *=200000;
-
+        attributeValue *=400000;
       }
-
       //test for min
       if (attributeValue < min){
         min = attributeValue;
       };
-
       //test for max
       if (attributeValue > max){
         max = attributeValue;
       };
     };
   });
-
   //set mean
-  var mean = (max + min) / 2;
-
+  let mean = (max + min) / 2;
   //return values as an object
   return {
     max: max,
@@ -255,35 +249,41 @@ function getCircleValues(map, attribute){
 };
 
 function updateLegend(map, attribute){
-  var year = attribute.split("_")[0];
-  var content = "<b>Carbon year:</b> " + year;
+  //extract year from attribute name
+  let year = attribute.split("_")[0];
+  //make year label
+  let content = "<b>Carbon year:</b> " + year;
+  //add it to the timestap container as html tag
   $(".timestamp-container").html(content);
+  //interate overr every feature
   map.eachLayer(function(layer){
     //get the attribute value
     if (layer.feature){
+      //set legelnd title to current series
       $(".title-container").html(layer.feature.properties["Series"]);
-      //check if per capita series, if so multiply attValue so it shows on the map
     };
   });
+  //set title of current series to letiable for later
+  let code = $(".title-container").text();
   //get the max, mean, and min values as an object
-  var code = $(".title-container").text();
-  var circleValues = getCircleValues(map, attribute);
-  for (var key in circleValues){
+  let circleValues = getCircleValues(map, attribute);
+  for (let key in circleValues){
     //get the radius
-    var radius = calcPropRadius(circleValues[key]);
+    let radius = calcPropRadius(circleValues[key]);
     //assign the cy and r attributes
     $('#'+key).attr({
-      cy: 230 - radius,
+      cy: 160 - radius,
       r: radius
     });
-    //assign label text
+    //assign label text position
     $('#'+key+'-text').attr({
-      y: 230 - radius*2
+      y: 160 - (radius*2)-4
     });
-    //check if value needs de-scaling for label
+    //check if value is per capita and needs de-scaling for label
     if(code ==="CO2 emmisions per capita"){
-      var val =circleValues[key]
-      $('#'+key+'-text').text((val/200000) + " pounds");
+      let val =Math.round(circleValues[key]);
+      console.log(val);
+      $('#'+key+'-text').text((val/400000) + " pounds");
     }else{
       $('#'+key+'-text').text(Math.round(circleValues[key]) + " pounds");
     }
@@ -293,14 +293,12 @@ function updateLegend(map, attribute){
 //build an attributes array from the data
 function processData(data){
   //empty array to hold attributes
-  var attributes = [];
-
+  let attributes = [];
   //properties of the first feature in the dataset
-  var properties = data.features[0].properties;
-
-  for (var attribute in properties){
+  let properties = data.features[0].properties;
+  for (let attribute in properties){
     //only take attributes with population values
-    if (attribute.indexOf("1") === 0 || attribute.indexOf("1") === 5){
+    if (attribute.indexOf("1") === 0 || attribute.indexOf("1") === 5 || attribute.indexOf("0") === 1){
       attributes.push(attribute);
     };
   };
@@ -314,7 +312,7 @@ function getTotalData(map, total){
     dataType: "json",
     success: function(response){
       //create an attributes array
-      var attributes = processData(response);
+      let attributes = processData(response);
       //call function to create proportional symbols
       createTotalSymbols(response, total, attributes);
       //createSequenceControls(map, attributes);
@@ -328,11 +326,11 @@ function getCapitaData(map, capita, total){
     dataType: "json",
     success: function(response){
       //create an attributes array
-      var attributes = processData(response);
+      let attributes = processData(response);
       //call function to create proportional symbols
       createCapitaSymbols(response, capita, attributes);
+      //create the controls for timestamp
       createSequenceControls(map, capita, total, attributes);
-      //createLegend(map, attributes);
     }
   });
 };
