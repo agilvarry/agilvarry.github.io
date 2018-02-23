@@ -132,10 +132,14 @@ html, body, #map {
 .circle-text{
   font-weight: 700;
   fill: Black;
+  font-size:0.9em;
 }
 .title-container{
 font-size: 1.2em;
 font-weight: 600;
+border-width: medium;
+border-color: black;
+border-radius: 1px;
 }
 /* get icons for forward backward buttons if i decide to use them*/
 
