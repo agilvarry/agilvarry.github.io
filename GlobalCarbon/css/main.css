@@ -103,7 +103,7 @@ html, body{
 nav{
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+
   align-items: center;
   height: 10%;
   color: #f5f5f5;
@@ -115,9 +115,11 @@ nav{
   padding-left: 7px;
   text-decoration: none;
   color: inherit;
+  justify-content: flex-start;
 }
 #title{
-  margin: 0 auto;
+  margin: auto;
+  justify-content: flex-end;
 }
 #map{
   width: 100%;
