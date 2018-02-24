@@ -19,7 +19,7 @@ function createMap(){
   getTotalData(myMap, total);
   //set basemap
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-  	       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+  	       attribution: 'Tiles &copy; Esri; Data: Millennium Development Goals Indicators'
       }).addTo(myMap);
 
   myMap.locate({setView: true, maxZoom: 14});
