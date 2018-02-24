@@ -11,26 +11,28 @@ function createMap(){
     "Total Carbon": total,
     "Per Capita Carbon": capita
   }
+  //filler variable for toggleable layers option
+  let none;
+
   //functions to create layers
   getCapitaData(myMap, capita, total);
   getTotalData(myMap, total);
   //set basemap
-  L.tileLayer('https://api.mapbox.com/styles/v1/agilvarry/cjapm97ck36sh2rqoibdx95g5/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWdpbHZhcnJ5IiwiYSI6ImNqNmZqaWV6dTBoYXAzMm11NDJhbmFsaW0ifQ.XaYLUqcCpgz6Y17ygK4lZA',{
-    minZoom: 3,
-    maxZoom: 16
-  }).addTo(myMap);
+  L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+  	       attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+      }).addTo(myMap);
 
   myMap.locate({setView: true, maxZoom: 14});
   //add layer toggle to map
-  L.control.layers(dataLayers).addTo(myMap);
+  L.control.layers(dataLayers, none, {collapsed:false}).addTo(myMap);
 };
 
 function pointToLayer(feature, latlng, attributes){
   //initial marker symbol properties
   let marker = {
     radius: 8,
-    fillColor: "#ff7800",
-    color: "#000",
+    fillColor: "#31a354",
+    color: "#f5f5f5",
     weight: 1,
     opacity: 1,
     fillOpacity: 0.8
@@ -214,7 +216,7 @@ function createLegend(map, attributes){
     for (let i=0; i<circles.length; i++){
       //circle string
       svg += '<circle class="legend-circle" id="' + circles[i] +
-      '" fill="#F47821" fill-opacity="0.8" stroke="#d3d3d3" cx="75"/>';
+      '" fill="#31a354" fill-opacity="0.8" stroke="#f5f5f5" cx="75"/>';
       //text string
       svg += '<text class="circle-text" id="' + circles[i] + '-text" x="60"></text>';
     };

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=Abril+Fatface|Cabin');
 
 html{
-    background: #222 url(../img/abstract.svg) bottom right no-repeat;
+    background: #222;
     background-attachment: fixed;
     overflow-y: scroll;
 }
@@ -23,7 +23,7 @@ height: 100vw;
 
 
 h1,h2,h3,h4,h5,h6{
-    font-family: 'Abril Fatface', cursive;
+    font-family: 'Abril Fatface';
     margin-top: 0;
 }
 
