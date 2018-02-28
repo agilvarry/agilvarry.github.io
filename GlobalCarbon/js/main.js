@@ -192,7 +192,9 @@ function createSequenceControls(map, capita, total, attributes){
 
 
     });
+
     return container;
+     updateLegend(map, attributes[index]);
   }
 
   SequenceControl.addTo(map);
