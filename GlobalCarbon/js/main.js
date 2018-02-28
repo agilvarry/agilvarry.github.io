@@ -5,7 +5,6 @@ function createMap(){
   let total = new L.geoJson().addTo(myMap);
   let capita = new L.geoJson();
 
-
   //create layer object for switching
   let dataLayers={
     "Total Carbon": total,
@@ -146,7 +145,7 @@ function createSequenceControls(map, capita, total, attributes){
     let container = L.DomUtil.create('div', 'sequence-container');
     //create timestamp container
     let stamp = L.DomUtil.create('div', 'timestamp-container');
-    //create slider to progress time, add it to container
+    //create slider and buttons to progress time, add to container
     let slider = L.DomUtil.create("input", "range-slider");
     let forward = L.DomUtil.create("button", "skip");
     let back = L.DomUtil.create("button","skip");
@@ -157,7 +156,7 @@ function createSequenceControls(map, capita, total, attributes){
     L.DomEvent.on(container, 'mousedown touchstart touchmove dblclick pointerdown', function(e) {
       L.DomEvent.stopPropagation(e);
     });
-
+    //index tracking variable
     let index = 0;
 
     //selector for the year slider
@@ -166,14 +165,13 @@ function createSequenceControls(map, capita, total, attributes){
     .attr({'type':'range', 'max': 17, 'min': 0, 'step': 1,'value': 0})
     .on('input change', function() {
       index = $(this).val();
-
       updateLegend(map, attributes[index]);
-      console.log(index);
       updatePropSymbols(map, attributes[index]);
     });
-
+    //    //update index, legend, and map symbols from slider
     $(forward).on("click", function(){
-         index++;
+         index++
+         //cycle index around if we click forward at the edge of timetamp
          index = index > 17 ? 0 : index;
        $('.range-slider').val(index);
        updateLegend(map, attributes[index]);
@@ -181,22 +179,15 @@ function createSequenceControls(map, capita, total, attributes){
     });
     $(back).on("click", function(){
        index--;
+          //cycle index around if we click backward at the edge of timetamp
          index = index < 0 ? 17 : index;
        $('.range-slider').val(index);
        updateLegend(map, attributes[index]);
        updatePropSymbols(map, attributes[index]);
     });
-
-    L.DomEvent.addListener(slider, 'input', function(e) {
-      L.DomEvent.stopPropagation(e);
-
-
-    });
-
     return container;
-     updateLegend(map, attributes[index]);
+    updateLegend(map, attributes[index]);
   }
-
   SequenceControl.addTo(map);
 };
 
@@ -214,7 +205,7 @@ function createLegend(map, attributes){
     //array of circle names to base loop on
     let circles = ["max", "mean", "min"];
 
-    //Step 2: loop to add each circle and text to svg string
+    //add each circle and text to svg string
     for (let i=0; i<circles.length; i++){
       //circle string
       svg += '<circle class="legend-circle" id="' + circles[i] +
@@ -306,7 +297,6 @@ function updateLegend(map, attribute){
     //check if value is per capita and needs de-scaling for label
     if(code ==="CO2 emmisions per capita"){
       let val =Math.round(circleValues[key]);
-      console.log(val);
       $('#'+key+'-text').text((val/400000) + " pounds");
     }else{
       $('#'+key+'-text').text(Math.round(circleValues[key]) + " pounds");
