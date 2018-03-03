@@ -1,6 +1,6 @@
 //Create the Leaflet map
 function createMap(){
-  //make map and layer letiables
+  //make map and layer variables
   let myMap = L.map('map').setView([51.1657, 10.4515], 4);
   let total = new L.geoJson().addTo(myMap);
   let capita = new L.geoJson();
@@ -12,7 +12,6 @@ function createMap(){
   }
   //filler variable for toggleable layers option
   let none;
-
   //functions to create layers
   getCapitaData(myMap, capita, total);
   getTotalData(myMap, total);
