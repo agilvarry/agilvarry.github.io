@@ -168,7 +168,7 @@ function createSequenceControls(map, capita, total, attributes){
       updateLegend(map, attributes[index]);
       updatePropSymbols(map, attributes[index]);
     });
-    //    //update index, legend, and map symbols from slider
+    //update index, legend, and map symbols from slider
     $(forward).on("click", function(){
          index++
          //cycle index around if we click forward at the edge of timetamp
@@ -185,8 +185,9 @@ function createSequenceControls(map, capita, total, attributes){
        updateLegend(map, attributes[index]);
        updatePropSymbols(map, attributes[index]);
     });
-    return container;
     updateLegend(map, attributes[index]);
+    return container;
+
   }
   SequenceControl.addTo(map);
 };
@@ -295,7 +296,7 @@ function updateLegend(map, attribute){
       y: 160 - (radius*2)-4
     });
     //check if value is per capita and needs de-scaling for label
-    if(code ==="CO2 emmisions per capita"){
+    if(code ==="Per Capita CO2"){
       let val =Math.round(circleValues[key]);
       $('#'+key+'-text').text((val/400000) + " pounds");
     }else{
