@@ -1,7 +1,7 @@
 //Create the Leaflet map
 function createMap(){
   //make map and layer letiables
-  let myMap = L.map('map').setView([40.76, -111.89], 3);
+  let myMap = L.map('map').setView([51.1657, 10.4515], 4);
   let total = new L.geoJson().addTo(myMap);
   let capita = new L.geoJson();
 
@@ -21,7 +21,7 @@ function createMap(){
   	       attribution: 'Tiles &copy; Esri; Data: MDGI'
       }).addTo(myMap);
 
-  myMap.locate({setView: true, maxZoom: 14});
+  myMap.locate({setView: true, maxZoom: 10, minZoom: 4});
   //add layer toggle to map
   L.control.layers(dataLayers, none, {collapsed:false}).addTo(myMap);
 };
