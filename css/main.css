@@ -99,7 +99,11 @@ textarea {
 
 
 
-
+#github{
+    color: inherit;
+    cursor: text;
+    text-decoration: none;      
+}
 
 
 
